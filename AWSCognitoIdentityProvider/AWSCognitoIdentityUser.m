@@ -85,7 +85,7 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
         [response aws_copyPropertiesFromObject:task.result];
         return [AWSTask taskWithResult:response];
     }];
-
+    
 }
 
 -(AWSTask<AWSCognitoIdentityUserConfirmForgotPasswordResponse *> *) confirmForgotPassword: (NSString *)confirmationCode password:(NSString *) password {
@@ -156,16 +156,16 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
         NSDate *expiration = [NSDate aws_dateFromString:expirationDate format:AWSDateISO8601DateFormat1];
         NSString * refreshTokenKey = [self keyChainKey:keyChainNamespace key:AWSCognitoIdentityUserRefreshToken];
         NSString * refreshToken = self.pool.keychain[refreshTokenKey];
-
+        
         // Token exists, the user is confirmed
         self.confirmedStatus = AWSCognitoIdentityUserStatusConfirmed;
-
+        
         //if the session expires > 5 minutes return it.
         if(expiration && [expiration compare:[NSDate dateWithTimeIntervalSinceNow:5 * 60]] == NSOrderedDescending){
             NSString * idTokenKey = [self keyChainKey:keyChainNamespace key:AWSCognitoIdentityUserIdToken];
             NSString * accessTokenKey = [self keyChainKey:keyChainNamespace key:AWSCognitoIdentityUserAccessToken];
             AWSCognitoIdentityUserSession * session = [[AWSCognitoIdentityUserSession alloc] initWithIdToken:self.pool.keychain[idTokenKey] accessToken:self.pool.keychain[accessTokenKey] refreshToken:refreshToken expirationTime:expiration];
-        
+            
             session.expirationTime = expiration;
             return [AWSTask taskWithResult:session];
         }
@@ -240,7 +240,7 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
         AWSCognitoIdentityProviderRespondToAuthChallengeResponse * authenticateResult = task.result;
         AWSCognitoIdentityProviderAuthenticationResultType * authResult = task.result.authenticationResult;
         AWSCognitoIdentityProviderChallengeNameType nextChallenge = authenticateResult.challengeName;
-
+        
         AWSCognitoIdentityUserSession * session = nil;
         //No more challenges we have a session
         if(authResult != nil){
@@ -376,8 +376,8 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
             AWSCognitoIdentityProviderConfirmDeviceRequest * request = [AWSCognitoIdentityProviderConfirmDeviceRequest new];
             request.accessToken = authResult.accessToken;
             request.deviceKey = deviceKey;
-            request.deviceName = [[UIDevice currentDevice] name];
-
+            request.deviceName = @"MAC";// [[UIDevice currentDevice] name];
+            
             AWSCognitoIdentityProviderSrpHelper * srpHelper = [[AWSCognitoIdentityProviderSrpHelper alloc] initWithPoolName:deviceGroup userName:deviceKey password:secret];
             request.deviceSecretVerifierConfig = [AWSCognitoIdentityProviderDeviceSecretVerifierConfigType new];
             request.deviceSecretVerifierConfig.salt = [[NSData aws_dataWithSignedBigInteger:srpHelper.salt] base64EncodedStringWithOptions:0];
@@ -406,8 +406,8 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
                             }
                             return task;
                         }];
-
-
+                        
+                        
                     }else {
                         AWSLogWarn(@"startRememberDevice is not implemented by authentication delegate, defaulting to not remembered.");
                     }
@@ -530,7 +530,7 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
     return [[self.pool.client initiateAuth:input] continueWithBlock:^id _Nullable(AWSTask<AWSCognitoIdentityProviderInitiateAuthResponse *> * _Nonnull task) {
         //if there was an error, it may be due to the device being forgotten, reset the device and retry if that is the case
         return [self forgetDeviceOnInitiateDeviceNotFoundError:task retryContinuation:^AWSTask *{
-                return [self performInitiateCustomAuthChallenge:challengeDetails];
+            return [self performInitiateCustomAuthChallenge:challengeDetails];
         }];
     }];
 }
@@ -865,7 +865,7 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
             return [AWSTask taskWithResult:response];
         }];
     }];
-
+    
 }
 
 /**
@@ -914,7 +914,7 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
         request.accessToken = task.result.accessToken.tokenString;
         return [self.pool.client deleteUser:request];
     }];
-
+    
 }
 
 -(void) signOut {

@@ -93,7 +93,7 @@ static NSString *const AWSCognitoUserPoolAppClientSecret = @"CognitoUserPoolAppC
                                        reason:@"`defaultServiceConfiguration` is `nil`. You need to set it before using this method."
                                      userInfo:nil];
     }
-
+    
     [self registerCognitoIdentityUserPoolWithConfiguration:[AWSServiceManager defaultServiceManager].defaultServiceConfiguration
                                      userPoolConfiguration:userPoolConfiguration
                                                     forKey:key];
@@ -141,12 +141,12 @@ static NSString *const AWSCognitoUserPoolAppClientSecret = @"CognitoUserPoolAppC
             }
             _configuration = [[AWSServiceManager defaultServiceManager].defaultServiceConfiguration copy];
         }
-
+        
         _userPoolConfiguration = [userPoolConfiguration copy];
-
+        
         _client = [[AWSCognitoIdentityProvider alloc] initWithConfiguration:_configuration];
         _userPoolConfiguration = userPoolConfiguration;
-
+        
         _keychain = [AWSUICKeyChainStore keyChainStoreWithService:[NSString stringWithFormat:@"%@.%@", [NSBundle mainBundle].bundleIdentifier, [AWSCognitoIdentityUserPool class]]];
     }
     return self;
@@ -157,9 +157,9 @@ static NSString *const AWSCognitoUserPoolAppClientSecret = @"CognitoUserPoolAppC
 }
 
 - (AWSTask<AWSCognitoIdentityUserPoolSignUpResponse *>*) signUp: (NSString*) username
-                                     password: (NSString*) password
-                               userAttributes: (NSArray<AWSCognitoIdentityUserAttributeType *> *) userAttributes
-                               validationData: (NSArray<AWSCognitoIdentityUserAttributeType *> *) validationData {
+                                                       password: (NSString*) password
+                                                 userAttributes: (NSArray<AWSCognitoIdentityUserAttributeType *> *) userAttributes
+                                                 validationData: (NSArray<AWSCognitoIdentityUserAttributeType *> *) validationData {
     AWSCognitoIdentityProviderSignUpRequest* request = [AWSCognitoIdentityProviderSignUpRequest new];
     request.clientId = self.userPoolConfiguration.clientId;
     request.username = username;
@@ -245,17 +245,17 @@ static NSString *const AWSCognitoUserPoolAppClientSecret = @"CognitoUserPoolAppC
 {
     if(self.userPoolConfiguration.clientSecret == nil)
         return nil;
-
+    
     const char *cKey  = [self.userPoolConfiguration.clientSecret cStringUsingEncoding:NSASCIIStringEncoding];
     const char *cData = [[userName stringByAppendingString:self.userPoolConfiguration.clientId] cStringUsingEncoding:NSASCIIStringEncoding];
-
+    
     unsigned char cHMAC[CC_SHA256_DIGEST_LENGTH];
-
+    
     CCHmac(kCCHmacAlgSHA256, cKey, strlen(cKey), cData, strlen(cData), cHMAC);
-
+    
     NSData *HMAC = [[NSData alloc] initWithBytes:cHMAC
                                           length:CC_SHA256_DIGEST_LENGTH];
-
+    
     return [HMAC base64EncodedStringWithOptions:kNilOptions];
 }
 
@@ -267,18 +267,18 @@ AWSCognitoIdentityUserAttributeType* attribute(NSString *name, NSString *value) 
 }
 
 - (NSDictionary<NSString *,NSString *>*)cognitoValidationData {
-    UIDevice *device = [UIDevice currentDevice];
+    
     NSBundle *bundle = [NSBundle mainBundle];
     NSString *bundleVersion = [bundle objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey];
     NSString *bundleShortVersion = [bundle objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
     NSMutableDictionary * result = [NSMutableDictionary new];
-
+    
     NSArray * atts = @[
-                       attribute(@"cognito:iOSVersion", device.systemVersion),
-                       attribute(@"cognito:systemName", device.systemName),
-                       attribute(@"cognito:deviceName", device.name),
-                       attribute(@"cognito:model", device.model),
-                       attribute(@"cognito:idForVendor", device.identifierForVendor.UUIDString),
+                       attribute(@"cognito:iOSVersion", @"unavailable"),//device.systemVersion),
+                       attribute(@"cognito:systemName", @"osx"),//device.systemName),
+                       attribute(@"cognito:deviceName", @"mac"),//device.name),
+                       attribute(@"cognito:model", @"mac"),// device.model),
+                       attribute(@"cognito:idForVendor", @"mac"),//device.identifierForVendor.UUIDString),
                        attribute(@"cognito:bundleId", bundle.bundleIdentifier),
                        attribute(@"cognito:bundleVersion", bundleVersion),
                        attribute(@"cognito:bundleShortV", bundleShortVersion)
@@ -330,7 +330,7 @@ AWSCognitoIdentityUserAttributeType* attribute(NSString *name, NSString *value) 
         _poolId = poolId;
         _shouldProvideCognitoValidationData = YES;
     }
-
+    
     return self;
 }
 
@@ -344,7 +344,7 @@ shouldProvideCognitoValidationData:(BOOL)shouldProvideCognitoValidationData {
         _poolId = poolId;
         _shouldProvideCognitoValidationData = shouldProvideCognitoValidationData;
     }
-
+    
     return self;
 }
 
