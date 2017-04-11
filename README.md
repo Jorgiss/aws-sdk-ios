@@ -1,8 +1,8 @@
 MAC OS X implementation using cocoapods
 Currently only supports 
-# S3
-# Cognito
-# Core
+### S3
+### Cognito
+### Core
 
 Usage:
     pod 'AWSCore', :git => 'https://github.com/Jorgiss/aws-sdk-ios'
