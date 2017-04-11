@@ -1,3 +1,18 @@
+MAC OS X implementation using cocoapods
+Currently only supports 
+# S3
+# Cognito
+# Core
+
+Usage:
+    pod 'AWSCore', :git => 'https://github.com/Jorgiss/aws-sdk-ios'
+    pod 'AWSCognitoIdentityProvider', :git => 'https://github.com/Jorgiss/aws-sdk-ios'
+    pod 'AWSCognito', :git => 'https://github.com/Jorgiss/aws-sdk-ios'
+    pod 'AWSS3', :git => 'https://github.com/Jorgiss/aws-sdk-ios'
+
+###Important - Always have pod 'AWSCore', :git => 'https://github.com/Jorgiss/aws-sdk-ios' first
+
+
 # AWS Mobile SDK for iOS
 
 [![Release](https://img.shields.io/github/release/aws/aws-sdk-ios.svg)]()
