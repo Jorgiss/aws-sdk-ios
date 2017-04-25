@@ -5,7 +5,6 @@ Currently only supports
 * Core
 
 Usage:
-.
 
         target :'YourTarget' do
             pod 'AWSCore', :git => 'https://github.com/Jorgiss/aws-sdk-ios'
@@ -16,7 +15,6 @@ Usage:
 
 
 ### Important - Always have 
-.
 
         pod 'AWSCore', :git => 'https://github.com/Jorgiss/aws-sdk-ios' 
           
