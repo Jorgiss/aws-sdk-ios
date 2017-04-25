@@ -15,7 +15,12 @@ Usage:
          end
 
 
-### Important - Always have pod 'AWSCore', :git => 'https://github.com/Jorgiss/aws-sdk-ios' first
+### Important - Always have 
+.
+
+        pod 'AWSCore', :git => 'https://github.com/Jorgiss/aws-sdk-ios' 
+          
+ first
 
 
 # AWS Mobile SDK for iOS
